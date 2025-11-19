@@ -15,6 +15,19 @@ SET usage_rowcount = 5000;
 
 TRUNCATE TABLE SFE_RAW_BILLING.USAGE_METRICS;
 
+INSERT INTO SFE_RAW_BILLING.USAGE_METRICS (
+    account_id,
+    usage_ts,
+    minutes_used,
+    data_mb,
+    sms_count,
+    service_type,
+    cost_amount,
+    region_code,
+    ingest_source,
+    load_ts,
+    row_comment
+)
 WITH usage_source AS (
     SELECT
         seq4() AS seq_id,
@@ -28,19 +41,6 @@ WITH usage_source AS (
         ARRAY_CONSTRUCT('NAMER', 'EMEA', 'APAC', 'LATAM')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 4)]::STRING AS region_code,
         ARRAY_CONSTRUCT('kafka', 'salesforce', 'ga4')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS ingest_source
     FROM TABLE(GENERATOR(ROWCOUNT => $usage_rowcount))
-)
-INSERT INTO SFE_RAW_BILLING.USAGE_METRICS (
-    account_id,
-    usage_ts,
-    minutes_used,
-    data_mb,
-    sms_count,
-    service_type,
-    cost_amount,
-    region_code,
-    ingest_source,
-    load_ts,
-    row_comment
 )
 SELECT
     account_id,
@@ -58,15 +58,6 @@ FROM usage_source;
 
 TRUNCATE TABLE SFE_RAW_BILLING.CUSTOMER_SEGMENTS;
 
-WITH segment_source AS (
-    SELECT DISTINCT
-        account_id,
-        RANDSTR(10, RANDOM()) AS customer_name,
-        ARRAY_CONSTRUCT('Enterprise', 'Commercial', 'SMB')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS segment_name,
-        ARRAY_CONSTRUCT('Active', 'At Risk', 'Churned')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS lifecycle_status,
-        ARRAY_CONSTRUCT('Gold', 'Silver', 'Bronze')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS tier
-    FROM SFE_RAW_BILLING.USAGE_METRICS
-)
 INSERT INTO SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
     account_id,
     customer_name,
@@ -76,6 +67,15 @@ INSERT INTO SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
     effective_start,
     effective_end,
     row_comment
+)
+WITH segment_source AS (
+    SELECT DISTINCT
+        account_id,
+        RANDSTR(10, RANDOM()) AS customer_name,
+        ARRAY_CONSTRUCT('Enterprise', 'Commercial', 'SMB')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS segment_name,
+        ARRAY_CONSTRUCT('Active', 'At Risk', 'Churned')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS lifecycle_status,
+        ARRAY_CONSTRUCT('Gold', 'Silver', 'Bronze')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS tier
+    FROM SFE_RAW_BILLING.USAGE_METRICS
 )
 SELECT
     account_id,
