@@ -71,10 +71,11 @@ INSERT INTO SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
 WITH segment_source AS (
     SELECT DISTINCT
         account_id,
-        RANDSTR(10, RANDOM()) AS customer_name,
-        ARRAY_CONSTRUCT('Enterprise', 'Commercial', 'SMB')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS segment_name,
-        ARRAY_CONSTRUCT('Active', 'At Risk', 'Churned')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS lifecycle_status,
-        ARRAY_CONSTRUCT('Gold', 'Silver', 'Bronze')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS tier
+        -- Use account_id as seed for deterministic customer name generation
+        RANDSTR(10, RANDOM(account_id)) AS customer_name,
+        ARRAY_CONSTRUCT('Enterprise', 'Commercial', 'SMB')[1 + MOD(UNIFORM(0, 1000, RANDOM(account_id)), 3)]::STRING AS segment_name,
+        ARRAY_CONSTRUCT('Active', 'At Risk', 'Churned')[1 + MOD(UNIFORM(0, 1000, RANDOM(account_id)), 3)]::STRING AS lifecycle_status,
+        ARRAY_CONSTRUCT('Gold', 'Silver', 'Bronze')[1 + MOD(UNIFORM(0, 1000, RANDOM(account_id)), 3)]::STRING AS tier
     FROM SFE_RAW_BILLING.USAGE_METRICS
 )
 SELECT

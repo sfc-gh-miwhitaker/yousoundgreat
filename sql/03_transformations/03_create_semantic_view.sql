@@ -219,25 +219,25 @@ tables:
         expr: LATEST_ALERT = 'ANOMALY'
 
 verified_queries:
-        - name: top_accounts_by_cost
-          question: What are the top 5 accounts by cost this month?
-          verified_at: 1731974400
-          verified_by: Michael Whitaker
-          use_as_onboarding_question: true
-          sql: |
-            SELECT
-              ACCOUNT_ID,
-              CUSTOMER_NAME,
-              SEGMENT_NAME,
-              TOTAL_COST,
-              VOICE_COST,
-              DATA_COST,
-              SMS_COST
-            FROM ACCOUNT_BILLING
-            WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
-            ORDER BY TOTAL_COST DESC
-            LIMIT 5
-  
+  - name: top_accounts_by_cost
+    question: What are the top 5 accounts by cost this month?
+    verified_at: 1731974400
+    verified_by: Michael Whitaker
+    use_as_onboarding_question: true
+    sql: |
+      SELECT
+        ACCOUNT_ID,
+        CUSTOMER_NAME,
+        SEGMENT_NAME,
+        TOTAL_COST,
+        VOICE_COST,
+        DATA_COST,
+        SMS_COST
+      FROM ACCOUNT_BILLING
+      WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+      ORDER BY TOTAL_COST DESC
+      LIMIT 5
+
   - name: accounts_with_anomalies
     question: Show me all accounts with cost anomalies this month
     verified_at: 1731974400
@@ -256,7 +256,7 @@ verified_queries:
       WHERE LATEST_ALERT = 'ANOMALY'
         AND BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
       ORDER BY AVG_ANOMALY_SCORE DESC
-  
+
   - name: segment_comparison_3months
     question: Compare average costs between Enterprise, SMB, and Commercial segments over the last 3 months
     verified_at: 1731974400
@@ -272,29 +272,29 @@ verified_queries:
       WHERE BILLING_MONTH >= DATEADD('month', -3, DATE_TRUNC('month', CURRENT_DATE()))
       GROUP BY SEGMENT_NAME, BILLING_MONTH
       ORDER BY BILLING_MONTH DESC, avg_cost DESC
-  
-        - name: account_cost_breakdown
-          question: Show me a detailed cost breakdown for a specific account
-          verified_at: 1731974400
-          verified_by: Michael Whitaker
-          use_as_onboarding_question: true
-          sql: |
-            SELECT
-              ACCOUNT_ID,
-              CUSTOMER_NAME,
-              BILLING_MONTH,
-              VOICE_COST,
-              DATA_COST,
-              SMS_COST,
-              TOTAL_COST,
-              ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct,
-              ROUND((DATA_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS data_pct,
-              ROUND((SMS_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS sms_pct
-            FROM ACCOUNT_BILLING
-            WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
-            ORDER BY TOTAL_COST DESC
-            LIMIT 1
-  
+
+  - name: account_cost_breakdown
+    question: Show me a detailed cost breakdown for a specific account
+    verified_at: 1731974400
+    verified_by: Michael Whitaker
+    use_as_onboarding_question: true
+    sql: |
+      SELECT
+        ACCOUNT_ID,
+        CUSTOMER_NAME,
+        BILLING_MONTH,
+        VOICE_COST,
+        DATA_COST,
+        SMS_COST,
+        TOTAL_COST,
+        ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct,
+        ROUND((DATA_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS data_pct,
+        ROUND((SMS_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS sms_pct
+      FROM ACCOUNT_BILLING
+      WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+      ORDER BY TOTAL_COST DESC
+      LIMIT 1
+
   - name: month_over_month_increases
     question: Which accounts had cost increases over 20% month-over-month?
     verified_at: 1731974400
@@ -323,7 +323,7 @@ verified_queries:
       WHERE prev_month_cost IS NOT NULL
         AND ((TOTAL_COST - prev_month_cost) / NULLIF(prev_month_cost, 0)) > 0.20
       ORDER BY pct_change DESC
-  
+
   - name: enterprise_cost_trend
     question: Show me the cost trend for Enterprise accounts over the last 6 months
     verified_at: 1731974400
