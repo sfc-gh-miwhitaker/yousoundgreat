@@ -28,17 +28,13 @@ EXCEPTION
         NULL;
 END;
 
--- Remove agent and Streamlit app
--- Note: ALTER SNOWFLAKE INTELLIGENCE DROP AGENT does not support IF EXISTS
-BEGIN
-    ALTER SNOWFLAKE INTELLIGENCE SNOWFLAKE_INTELLIGENCE_OBJECT_DEFAULT
-        DROP AGENT SFE_ANALYTICS_COSTS.SFE_BILLING_AGENT;
-EXCEPTION
-    WHEN OTHER THEN
-        NULL;
-END;
+-- Drop agent from Snowflake Intelligence shared schema
+-- Note: snowflake_intelligence.agents schema is shared infrastructure - do NOT drop it
+USE DATABASE snowflake_intelligence;
+DROP AGENT IF EXISTS agents.SFE_BILLING_AGENT;
 
-DROP AGENT IF EXISTS SFE_ANALYTICS_COSTS.SFE_BILLING_AGENT;
+-- Drop Streamlit app from project schema
+USE DATABASE SNOWFLAKE_EXAMPLE;
 DROP STREAMLIT IF EXISTS SFE_ANALYTICS_COSTS.SFE_BILLING_STREAMLIT;
 
 -- Drop Git repo clone (keep API integration per shared use)
@@ -53,4 +49,9 @@ DROP SCHEMA IF EXISTS SFE_ANALYTICS_COSTS CASCADE;
 DROP SCHEMA IF EXISTS SFE_STG_TELECOM CASCADE;
 DROP SCHEMA IF EXISTS SFE_RAW_BILLING CASCADE;
 
--- Preserve SNOWFLAKE_EXAMPLE database and SFE_GIT_API_INTEGRATION as shared assets.
+-- PROTECTED SHARED INFRASTRUCTURE (preserved for other projects):
+-- - snowflake_intelligence database (organizational Snowflake Intelligence repository)
+-- - snowflake_intelligence.agents schema (agent discovery namespace)
+-- - SNOWFLAKE_EXAMPLE database (demo database)
+-- - SNOWFLAKE_EXAMPLE.GIT_REPOS schema (shared Git repository namespace)
+-- - SFE_GIT_API_INTEGRATION (shared API integration)
