@@ -53,9 +53,9 @@ $$
     
     "sample_questions": [
       { "question": "What are the top 5 accounts by cost this month?" },
-      { "question": "Show me all accounts with cost anomalies this month" },
-      { "question": "Compare average costs between Enterprise, SMB, and Commercial segments over the last 3 months" },
-      { "question": "Which accounts had cost increases over 20% month-over-month?" },
+      { "question": "Show me the top 3 accounts by total spending" },
+      { "question": "Which Enterprise accounts spent the most on data services?" },
+      { "question": "What were the highest voice costs by account?" },
       { "question": "What is the escalation policy for billing disputes over $10,000?" }
     ],
     

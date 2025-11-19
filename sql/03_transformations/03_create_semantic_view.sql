@@ -238,8 +238,8 @@ verified_queries:
       ORDER BY TOTAL_COST DESC
       LIMIT 5
 
-  - name: accounts_with_anomalies
-    question: Show me all accounts with cost anomalies this month
+  - name: top_accounts_by_total_spending
+    question: Show me the top 3 accounts by total spending
     verified_at: 1731974400
     verified_by: Michael Whitaker
     use_as_onboarding_question: true
@@ -248,81 +248,69 @@ verified_queries:
         ACCOUNT_ID,
         CUSTOMER_NAME,
         SEGMENT_NAME,
-        BILLING_MONTH,
         TOTAL_COST,
-        AVG_ANOMALY_SCORE,
-        LATEST_ALERT
-      FROM ACCOUNT_BILLING
-      WHERE LATEST_ALERT = 'ANOMALY'
-        AND BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
-      ORDER BY AVG_ANOMALY_SCORE DESC
-
-  - name: segment_comparison_3months
-    question: Compare average costs between Enterprise, SMB, and Commercial segments over the last 3 months
-    verified_at: 1731974400
-    verified_by: Michael Whitaker
-    sql: |
-      SELECT
-        SEGMENT_NAME,
-        BILLING_MONTH,
-        AVG(TOTAL_COST) AS avg_cost,
-        COUNT(DISTINCT ACCOUNT_ID) AS account_count,
-        SUM(TOTAL_COST) AS segment_total
-      FROM ACCOUNT_BILLING
-      WHERE BILLING_MONTH >= DATEADD('month', -3, DATE_TRUNC('month', CURRENT_DATE()))
-      GROUP BY SEGMENT_NAME, BILLING_MONTH
-      ORDER BY BILLING_MONTH DESC, avg_cost DESC
-
-  - name: account_cost_breakdown
-    question: Show me a detailed cost breakdown for a specific account
-    verified_at: 1731974400
-    verified_by: Michael Whitaker
-    use_as_onboarding_question: true
-    sql: |
-      SELECT
-        ACCOUNT_ID,
-        CUSTOMER_NAME,
-        BILLING_MONTH,
         VOICE_COST,
         DATA_COST,
-        SMS_COST,
-        TOTAL_COST,
-        ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct,
-        ROUND((DATA_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS data_pct,
-        ROUND((SMS_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS sms_pct
+        SMS_COST
       FROM ACCOUNT_BILLING
       WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
       ORDER BY TOTAL_COST DESC
-      LIMIT 1
+      LIMIT 3
 
-  - name: month_over_month_increases
-    question: Which accounts had cost increases over 20% month-over-month?
+  - name: enterprise_data_costs
+    question: Which Enterprise accounts spent the most on data services?
     verified_at: 1731974400
     verified_by: Michael Whitaker
+    use_as_onboarding_question: true
     sql: |
-      WITH monthly_costs AS (
-        SELECT
-          ACCOUNT_ID,
-          CUSTOMER_NAME,
-          SEGMENT_NAME,
-          BILLING_MONTH,
-          TOTAL_COST,
-          LAG(TOTAL_COST) OVER (PARTITION BY ACCOUNT_ID ORDER BY BILLING_MONTH) AS prev_month_cost
-        FROM ACCOUNT_BILLING
-      )
+      SELECT
+        ACCOUNT_ID,
+        CUSTOMER_NAME,
+        DATA_COST,
+        TOTAL_COST,
+        ROUND((DATA_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS data_cost_pct
+      FROM ACCOUNT_BILLING
+      WHERE SEGMENT_NAME = 'Enterprise'
+        AND BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+      ORDER BY DATA_COST DESC
+      LIMIT 5
+
+  - name: highest_voice_costs
+    question: What were the highest voice costs by account?
+    verified_at: 1731974400
+    verified_by: Michael Whitaker
+    use_as_onboarding_question: true
+    sql: |
       SELECT
         ACCOUNT_ID,
         CUSTOMER_NAME,
         SEGMENT_NAME,
-        BILLING_MONTH,
-        prev_month_cost,
-        TOTAL_COST AS current_month_cost,
-        TOTAL_COST - prev_month_cost AS cost_change,
-        ROUND(((TOTAL_COST - prev_month_cost) / NULLIF(prev_month_cost, 0)) * 100, 1) AS pct_change
-      FROM monthly_costs
-      WHERE prev_month_cost IS NOT NULL
-        AND ((TOTAL_COST - prev_month_cost) / NULLIF(prev_month_cost, 0)) > 0.20
-      ORDER BY pct_change DESC
+        VOICE_COST,
+        TOTAL_COST,
+        ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct
+      FROM ACCOUNT_BILLING
+      WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+        AND VOICE_COST > 0
+      ORDER BY VOICE_COST DESC
+      LIMIT 5
+
+  - name: segment_cost_comparison
+    question: Compare average costs between Enterprise, SMB, and Commercial segments
+    verified_at: 1731974400
+    verified_by: Michael Whitaker
+    sql: |
+      SELECT
+        SEGMENT_NAME,
+        COUNT(DISTINCT ACCOUNT_ID) AS account_count,
+        SUM(TOTAL_COST) AS segment_total_cost,
+        AVG(TOTAL_COST) AS avg_cost_per_account,
+        AVG(VOICE_COST) AS avg_voice_cost,
+        AVG(DATA_COST) AS avg_data_cost,
+        AVG(SMS_COST) AS avg_sms_cost
+      FROM ACCOUNT_BILLING
+      WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+      GROUP BY SEGMENT_NAME
+      ORDER BY segment_total_cost DESC
 
   - name: enterprise_cost_trend
     question: Show me the cost trend for Enterprise accounts over the last 6 months
