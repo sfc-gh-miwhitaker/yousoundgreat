@@ -219,24 +219,24 @@ tables:
         expr: LATEST_ALERT = 'ANOMALY'
 
 verified_queries:
-  - name: top_accounts_by_cost
-    question: What were the top 5 accounts by cost in November 2024?
-    verified_at: 1731974400
-    verified_by: Michael Whitaker
-    use_as_onboarding_question: true
-    sql: |
-      SELECT
-        ACCOUNT_ID,
-        CUSTOMER_NAME,
-        SEGMENT_NAME,
-        TOTAL_COST,
-        VOICE_COST,
-        DATA_COST,
-        SMS_COST
-      FROM ACCOUNT_BILLING
-      WHERE BILLING_MONTH = '2024-11-01'
-      ORDER BY TOTAL_COST DESC
-      LIMIT 5
+        - name: top_accounts_by_cost
+          question: What are the top 5 accounts by cost this month?
+          verified_at: 1731974400
+          verified_by: Michael Whitaker
+          use_as_onboarding_question: true
+          sql: |
+            SELECT
+              ACCOUNT_ID,
+              CUSTOMER_NAME,
+              SEGMENT_NAME,
+              TOTAL_COST,
+              VOICE_COST,
+              DATA_COST,
+              SMS_COST
+            FROM ACCOUNT_BILLING
+            WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+            ORDER BY TOTAL_COST DESC
+            LIMIT 5
   
   - name: accounts_with_anomalies
     question: Show me all accounts with cost anomalies this month
@@ -273,26 +273,27 @@ verified_queries:
       GROUP BY SEGMENT_NAME, BILLING_MONTH
       ORDER BY BILLING_MONTH DESC, avg_cost DESC
   
-  - name: account_cost_breakdown
-    question: What were the costs for account 12345 in October 2024?
-    verified_at: 1731974400
-    verified_by: Michael Whitaker
-    use_as_onboarding_question: true
-    sql: |
-      SELECT
-        ACCOUNT_ID,
-        CUSTOMER_NAME,
-        BILLING_MONTH,
-        VOICE_COST,
-        DATA_COST,
-        SMS_COST,
-        TOTAL_COST,
-        ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct,
-        ROUND((DATA_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS data_pct,
-        ROUND((SMS_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS sms_pct
-      FROM ACCOUNT_BILLING
-      WHERE ACCOUNT_ID = 12345
-        AND BILLING_MONTH = '2024-10-01'
+        - name: account_cost_breakdown
+          question: Show me a detailed cost breakdown for a specific account
+          verified_at: 1731974400
+          verified_by: Michael Whitaker
+          use_as_onboarding_question: true
+          sql: |
+            SELECT
+              ACCOUNT_ID,
+              CUSTOMER_NAME,
+              BILLING_MONTH,
+              VOICE_COST,
+              DATA_COST,
+              SMS_COST,
+              TOTAL_COST,
+              ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct,
+              ROUND((DATA_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS data_pct,
+              ROUND((SMS_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS sms_pct
+            FROM ACCOUNT_BILLING
+            WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+            ORDER BY TOTAL_COST DESC
+            LIMIT 1
   
   - name: month_over_month_increases
     question: Which accounts had cost increases over 20% month-over-month?
