@@ -71,11 +71,12 @@ INSERT INTO SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
 WITH segment_source AS (
     SELECT DISTINCT
         account_id,
-        -- Use hash of account_id for deterministic random values (RANDOM requires constant seed)
+        -- Use account_id directly for deterministic customer name
         CONCAT('Customer_', LPAD(account_id::STRING, 5, '0')) AS customer_name,
-        ARRAY_CONSTRUCT('Enterprise', 'Commercial', 'SMB')[MOD(HASH(account_id), 3)]::STRING AS segment_name,
-        ARRAY_CONSTRUCT('Active', 'At Risk', 'Churned')[MOD(HASH(account_id * 2), 3)]::STRING AS lifecycle_status,
-        ARRAY_CONSTRUCT('Gold', 'Silver', 'Bronze')[MOD(HASH(account_id * 3), 3)]::STRING AS tier
+        -- Use ABS(HASH()) to ensure positive values before MOD
+        ARRAY_CONSTRUCT('Enterprise', 'Commercial', 'SMB')[MOD(ABS(HASH(account_id)), 3)]::STRING AS segment_name,
+        ARRAY_CONSTRUCT('Active', 'At Risk', 'Churned')[MOD(ABS(HASH(account_id * 2)), 3)]::STRING AS lifecycle_status,
+        ARRAY_CONSTRUCT('Gold', 'Silver', 'Bronze')[MOD(ABS(HASH(account_id * 3)), 3)]::STRING AS tier
     FROM SFE_RAW_BILLING.USAGE_METRICS
 )
 SELECT
@@ -126,13 +127,19 @@ SELECT
     seg.account_id,
     seg.customer_name,
     seg.segment_name,
-    ARRAY_CONSTRUCT('NAMER', 'EMEA', 'APAC', 'LATAM')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 4)]::STRING,
+    -- Use ABS(HASH()) for deterministic geography assignment
+    ARRAY_CONSTRUCT('NAMER', 'EMEA', 'APAC', 'LATAM')[MOD(ABS(HASH(seg.account_id * 4)), 4)]::STRING,
     seg.lifecycle_status,
-    ROUND(AVG(usage.cost_amount) OVER (PARTITION BY seg.account_id), 2),
-    MAX(usage.usage_ts) OVER (PARTITION BY seg.account_id)
+    ROUND(AVG(usage.cost_amount), 2) AS avg_monthly_cost,
+    MAX(usage.usage_ts) AS last_active_ts
 FROM SFE_RAW_BILLING.CUSTOMER_SEGMENTS AS seg
 JOIN SFE_RAW_BILLING.USAGE_METRICS AS usage
-    ON seg.account_id = usage.account_id;
+    ON seg.account_id = usage.account_id
+GROUP BY
+    seg.account_id,
+    seg.customer_name,
+    seg.segment_name,
+    seg.lifecycle_status;
 
 TRUNCATE TABLE SFE_SHARED_KNOWLEDGE.BILLING_KB;
 
