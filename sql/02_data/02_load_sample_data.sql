@@ -40,7 +40,7 @@ INSERT INTO SFE_RAW_BILLING.USAGE_METRICS (
     region_code,
     ingest_source,
     load_ts,
-    COMMENT
+    row_comment
 )
 SELECT
     account_id,
@@ -75,7 +75,7 @@ INSERT INTO SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
     tier,
     effective_start,
     effective_end,
-    COMMENT
+    row_comment
 )
 SELECT
     account_id,

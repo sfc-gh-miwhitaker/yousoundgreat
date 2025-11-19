@@ -9,7 +9,7 @@
  *   - SNOWFLAKE_EXAMPLE.SFE_SHARED_KNOWLEDGE
  * CLEANUP: sql/99_cleanup/teardown_all.sql
  ******************************************************************************/
-USE ROLE ACCOUNTADMIN;
+USE ROLE SYSADMIN;
 USE DATABASE SNOWFLAKE_EXAMPLE;
 
 CREATE SCHEMA IF NOT EXISTS SFE_RAW_BILLING COMMENT = 'DEMO: Raw telecom usage landing zone';
