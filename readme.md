@@ -7,7 +7,7 @@ Fastest path (no local clone required):
 3. **Clean up:** When finished, copy `sql/99_cleanup/teardown_all.sql` into Snowsight and run it, or follow the checklist in `docs/03-CLEANUP.md`. (~5 min)
 
 ## Overview
-This repo implements the TelecomCorp billing intelligence scenario described in `.cursor/plan.md`. Everything runs 100% inside Snowflake: ingestion (Snowpipe Streaming), transformation (dynamic tables + tasks), AI (Cortex ML, Cortex Search, Snowflake Intelligence), and visualization (Streamlit in Snowflake). The deliverable highlights how finance teams can ask natural language questions about multi-account Snowflake spend while keeping governance and cost controls inside the platform.
+This repo demonstrates a billing intelligence platform built 100% natively in Snowflake. It showcases ingestion (Snowpipe Streaming), transformation (dynamic tables + tasks), AI capabilities (Cortex ML, Cortex Search, Snowflake Intelligence agents), and visualization (Streamlit in Snowflake). The platform enables natural language questions about account-level costs while maintaining governance and cost controls entirely within Snowflake.
 This repository follows the **Snowsight-only automation mode**—all workloads run directly in Snowflake.
 
 ## Repository Layout

@@ -32,19 +32,22 @@ INSERT INTO SFE_RAW_BILLING.USAGE_METRICS (
 WITH usage_source AS (
     SELECT
         seq4() AS seq_id,
-        (10000 + UNIFORM(1, 9000, RANDOM()))::NUMBER AS account_id,
-        -- Spread data across 12 months (365 days), starting from 12 months ago
-        DATEADD('day', -1 * UNIFORM(1, 365, RANDOM(seq4())), CURRENT_TIMESTAMP()) AS usage_ts,
-        UNIFORM(1, 120, RANDOM()) AS minutes_used,
-        UNIFORM(1, 2000, RANDOM()) / 10 AS data_mb,
-        UNIFORM(1, 20, RANDOM()) AS sms_count,
+        -- Distribute accounts across range 10000-19000, cycling through ~100 accounts
+        10000 + MOD(seq4(), 100) * 90 AS account_id,
+        -- Spread data evenly across 12 months (365 days back from current date)
+        DATEADD('day', -1 * MOD(seq4(), 365), CURRENT_DATE()) AS usage_ts,
+        -- Vary usage metrics using MOD patterns
+        1 + MOD(seq4() * 7, 120) AS minutes_used,
+        (1 + MOD(seq4() * 11, 2000)) / 10.0 AS data_mb,
+        1 + MOD(seq4() * 13, 20) AS sms_count,
         -- Ensure balanced service type distribution (33% each)
         CASE MOD(seq4(), 3)
             WHEN 0 THEN 'voice'
             WHEN 1 THEN 'data'
             WHEN 2 THEN 'sms'
         END AS service_type,
-        ROUND(UNIFORM(5, 5000, RANDOM()) / 100, 2) AS cost_amount,
+        -- Generate cost amounts between $0.05 and $50.00
+        ROUND((5 + MOD(seq4() * 17, 4995)) / 100.0, 2) AS cost_amount,
         ARRAY_CONSTRUCT('NAMER', 'EMEA', 'APAC', 'LATAM')[MOD(seq4(), 4)]::STRING AS region_code,
         ARRAY_CONSTRUCT('kafka', 'salesforce', 'ga4')[MOD(seq4() * 2, 3)]::STRING AS ingest_source
     FROM TABLE(GENERATOR(ROWCOUNT => $usage_rowcount))
