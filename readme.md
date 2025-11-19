@@ -6,20 +6,14 @@ Fastest path (no local clone required):
 2. **Use the demo:** Follow `docs/02-USAGE.md` to open the Streamlit app and Snowflake Intelligence agent. (~15 min)
 3. **Clean up:** When finished, copy `sql/99_cleanup/teardown_all.sql` into Snowsight and run it, or follow the checklist in `docs/03-CLEANUP.md`. (~5 min)
 
-**Total setup time: ~30 minutes**
-
-**Optional local helpers:** If you clone the repo, the numbered scripts under `tools/` simply echo Snowsight checklists (no Python/virtualenv required).
-
 ## Overview
 This repo implements the TelecomCorp billing intelligence scenario described in `.cursor/plan.md`. Everything runs 100% inside Snowflake: ingestion (Snowpipe Streaming), transformation (dynamic tables + tasks), AI (Cortex ML, Cortex Search, Snowflake Intelligence), and visualization (Streamlit in Snowflake). The deliverable highlights how finance teams can ask natural language questions about multi-account Snowflake spend while keeping governance and cost controls inside the platform.
-
-This repository follows the **Snowsight-only automation mode**—all workloads run directly in Snowflake, and the `tools/` scripts simply echo reminders with zero local runtime requirements.
+This repository follows the **Snowsight-only automation mode**—all workloads run directly in Snowflake.
 
 ## Repository Layout
 - `diagrams/` – Mandatory data, flow, network, auth Mermaid diagrams (Reference Impl)
 - `docs/` – Numbered guides for deployment, operations, cleanup
 - `sql/` – Idempotent scripts (00 deploy-all, 01 setup, 02 data, 03 transformations, 04 Cortex/Intelligence, 05 Streamlit, 99 cleanup)
-- `tools/` – Numbered wrappers that print deployment/service checklists (`00_master`, `02_start`, `03_status`, `04_stop`)
 - `config/.env.example` – Placeholder for local Snowflake connection variables
 
 ## Key Capabilities
@@ -45,4 +39,3 @@ Costs scale with data volume and warehouse runtime; adjust warehouse size or tas
 
 ## Status
 Build in progress via `builddemo` checkpoints using GitHub repo https://github.com/sfc-gh-miwhitaker/yousoundgreat.
-
