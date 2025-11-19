@@ -45,6 +45,10 @@ CREATE OR REPLACE GIT REPOSITORY SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO
     ORIGIN = 'https://github.com/sfc-gh-miwhitaker/yousoundgreat.git'
     COMMENT = 'DEMO: Git reference for billing intelligence demo';
 
+
+-- Fetch Repository Contents --------------------------------------------------
+ALTER GIT REPOSITORY SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO FETCH;
+
 -- Warehouse ------------------------------------------------------------------
 CREATE OR REPLACE WAREHOUSE SFE_BILLING_WH
     WITH WAREHOUSE_SIZE = 'XSMALL'
@@ -55,24 +59,20 @@ CREATE OR REPLACE WAREHOUSE SFE_BILLING_WH
 
 USE WAREHOUSE SFE_BILLING_WH;
 
--- Helper stage alias ----------------------------------------------------------
-SET git_branch = 'branches/main';
-SET git_root = '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/' || $git_branch;
-
--- Execute numbered scripts ----------------------------------------------------
-EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/01_create_database.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/02_create_schemas.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/03_create_roles.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/04_grants.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/02_data/01_create_tables.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/02_data/02_load_sample_data.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/03_transformations/01_create_streams.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/03_transformations/02_create_views.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/03_transformations/03_create_tasks.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/04_cortex/01_train_classification_model.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/04_cortex/02_cortex_search.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/04_cortex/03_intelligence_agent.sql';
-EXECUTE IMMEDIATE FROM :git_root || '/sql/05_streamlit/01_create_streamlit.sql';
+-- Execute numbered scripts from Git repository stage --------------------------
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/01_setup/01_create_database.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/01_setup/02_create_schemas.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/01_setup/03_create_roles.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/01_setup/04_grants.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/02_data/01_create_tables.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/02_data/02_load_sample_data.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/01_create_streams.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/02_create_views.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/03_create_tasks.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/04_cortex/01_train_classification_model.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/04_cortex/02_cortex_search.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/04_cortex/03_intelligence_agent.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/05_streamlit/01_create_streamlit.sql';
 
 -- Completion banner -----------------------------------------------------------
 SELECT 'Billing intelligence demo deployment complete. Switch to BILLING_ANALYST_ROLE for day-two operations.' AS STATUS_MESSAGE;
