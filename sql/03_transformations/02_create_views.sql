@@ -84,18 +84,33 @@ GROUP BY
     DATE_TRUNC('month', stg.usage_ts);
 
 /*******************************************************************************
- * VALIDATED EXAMPLE QUERIES
+ * DATA LAYER VALIDATION QUERIES
  * 
- * Purpose: Pre-validated queries that demonstrate correct semantic view usage.
- * These serve as:
- * 1. Unit tests for semantic view correctness
- * 2. Example patterns for Cortex Analyst SQL generation
- * 3. Documentation of intended use cases
- * 4. Training examples for Snowflake Intelligence agents
+ * Purpose: Validate that DT_ACCOUNT_BILLING produces correct aggregates for
+ *          the semantic view layer (SV_ACCOUNT_BILLING).
  * 
- * Validation: Each query MUST execute successfully and return expected results.
- * Maintenance: Update when semantic views change; re-validate quarterly.
- * Agent Integration: Copy these into agent instructions as example interactions.
+ * IMPORTANT: These are DATA ENGINEERING tests, not AI training examples.
+ * 
+ * Architecture:
+ *   RAW_BILLING → V_USAGE_ENRICHED → DT_ACCOUNT_BILLING → SV_ACCOUNT_BILLING
+ *   This file tests: ↑ (Dynamic Table aggregation logic)
+ * 
+ * For AI Training:
+ *   - Cortex Analyst learns from: verified_queries in SV_ACCOUNT_BILLING YAML
+ *   - Agent learns from: example interactions in agent instructions
+ * 
+ * These queries serve as:
+ * 1. Manual test cases for data engineers validating the dynamic table logic
+ * 2. Reference examples showing what data the semantic view should expose
+ * 3. Smoke tests before deploying semantic view changes
+ * 
+ * Validation: Run these queries after loading sample data to verify:
+ * ✓ Monthly aggregates calculate correctly
+ * ✓ Joins between staging view and dimension table work
+ * ✓ Anomaly detection logic produces expected flags
+ * ✓ Service-type cost breakdowns sum correctly
+ * 
+ * Last validated: 2024-11-19
  ******************************************************************************/
 
 -- Example 1: Top accounts by total cost in a specific month

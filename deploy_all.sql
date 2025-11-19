@@ -20,7 +20,7 @@
  *   2. Create API integration + Git repository referencing GitHub.
  *   3. Create dedicated warehouse SFE_BILLING_WH (auto-suspend 60s).
  *   4. Execute numbered SQL scripts directly from the Git repo stage.
- *
+ * 
  * TROUBLESHOOTING:
  *   - If API integration already exists, comment out the CREATE statement.
  *   - Use SHOW GIT REPOSITORIES to confirm clone succeeded.
@@ -68,7 +68,8 @@ EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/m
 EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/02_data/02_load_sample_data.sql';
 EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/01_create_streams.sql';
 EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/02_create_views.sql';
-EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/03_create_tasks.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/03_create_semantic_view.sql';
+EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/03_transformations/04_create_tasks.sql';
 EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/04_cortex/01_train_classification_model.sql';
 EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/04_cortex/02_cortex_search.sql';
 EXECUTE IMMEDIATE FROM '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/branches/main/sql/04_cortex/03_intelligence_agent.sql';

@@ -86,7 +86,7 @@ $$
   
   "tool_resources": {
     "account_billing_metrics": {
-      "semantic_view": "SNOWFLAKE_EXAMPLE.SFE_ANALYTICS_COSTS.DT_ACCOUNT_BILLING",
+      "semantic_view": "SNOWFLAKE_EXAMPLE.SFE_ANALYTICS_COSTS.SV_ACCOUNT_BILLING",
       "execution_environment": {
         "type": "warehouse",
         "warehouse": "SFE_BILLING_WH",
