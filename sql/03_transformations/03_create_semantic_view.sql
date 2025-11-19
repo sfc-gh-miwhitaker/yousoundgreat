@@ -286,11 +286,12 @@ verified_queries:
         CUSTOMER_NAME,
         SEGMENT_NAME,
         VOICE_COST,
+        DATA_COST,
+        SMS_COST,
         TOTAL_COST,
         ROUND((VOICE_COST / NULLIF(TOTAL_COST, 0)) * 100, 1) AS voice_pct
       FROM ACCOUNT_BILLING
       WHERE BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
-        AND VOICE_COST > 0
       ORDER BY VOICE_COST DESC
       LIMIT 5
 

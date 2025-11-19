@@ -11,7 +11,8 @@
 USE ROLE SYSADMIN;
 USE DATABASE SNOWFLAKE_EXAMPLE;
 
-SET usage_rowcount = 5000;
+-- Generate 12 months of historical data with balanced service type distribution
+SET usage_rowcount = 10000;  -- Increased for 12 months coverage
 
 TRUNCATE TABLE SFE_RAW_BILLING.USAGE_METRICS;
 
@@ -32,14 +33,20 @@ WITH usage_source AS (
     SELECT
         seq4() AS seq_id,
         (10000 + UNIFORM(1, 9000, RANDOM()))::NUMBER AS account_id,
-        DATEADD('minute', -1 * seq4()::INT, CURRENT_TIMESTAMP()) AS usage_ts,
+        -- Spread data across 12 months (365 days), starting from 12 months ago
+        DATEADD('day', -1 * UNIFORM(1, 365, RANDOM(seq4())), CURRENT_TIMESTAMP()) AS usage_ts,
         UNIFORM(1, 120, RANDOM()) AS minutes_used,
         UNIFORM(1, 2000, RANDOM()) / 10 AS data_mb,
         UNIFORM(1, 20, RANDOM()) AS sms_count,
-        ARRAY_CONSTRUCT('voice', 'data', 'sms')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS service_type,
+        -- Ensure balanced service type distribution (33% each)
+        CASE MOD(seq4(), 3)
+            WHEN 0 THEN 'voice'
+            WHEN 1 THEN 'data'
+            WHEN 2 THEN 'sms'
+        END AS service_type,
         ROUND(UNIFORM(5, 5000, RANDOM()) / 100, 2) AS cost_amount,
-        ARRAY_CONSTRUCT('NAMER', 'EMEA', 'APAC', 'LATAM')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 4)]::STRING AS region_code,
-        ARRAY_CONSTRUCT('kafka', 'salesforce', 'ga4')[1 + MOD(UNIFORM(0, 1000, RANDOM()), 3)]::STRING AS ingest_source
+        ARRAY_CONSTRUCT('NAMER', 'EMEA', 'APAC', 'LATAM')[MOD(seq4(), 4)]::STRING AS region_code,
+        ARRAY_CONSTRUCT('kafka', 'salesforce', 'ga4')[MOD(seq4() * 2, 3)]::STRING AS ingest_source
     FROM TABLE(GENERATOR(ROWCOUNT => $usage_rowcount))
 )
 SELECT
