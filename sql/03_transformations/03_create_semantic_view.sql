@@ -187,36 +187,36 @@ tables:
           - anomaly total
         description: Count of accounts with anomaly flags
         expr: SUM(IFF(LATEST_ALERT = 'ANOMALY', 1, 0))
-
-filters:
-  - name: CURRENT_MONTH
-    synonyms:
-      - this month
-      - current billing period
-    description: Filter to current month's billing data
-    expr: BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
-  
-  - name: LAST_MONTH
-    synonyms:
-      - previous month
-      - last billing period
-    description: Filter to previous month's billing data
-    expr: BILLING_MONTH = DATEADD('month', -1, DATE_TRUNC('month', CURRENT_DATE()))
-  
-  - name: ENTERPRISE_SEGMENT
-    synonyms:
-      - enterprise customers
-      - enterprise accounts
-    description: Filter to Enterprise segment only
-    expr: SEGMENT_NAME = 'Enterprise'
-  
-  - name: HAS_ANOMALY
-    synonyms:
-      - with anomalies
-      - flagged accounts
-      - anomalous accounts
-    description: Filter to accounts with anomaly alerts
-    expr: LATEST_ALERT = 'ANOMALY'
+    
+    filters:
+      - name: CURRENT_MONTH
+        synonyms:
+          - this month
+          - current billing period
+        description: Filter to current month's billing data
+        expr: BILLING_MONTH = DATE_TRUNC('month', CURRENT_DATE())
+      
+      - name: LAST_MONTH
+        synonyms:
+          - previous month
+          - last billing period
+        description: Filter to previous month's billing data
+        expr: BILLING_MONTH = DATEADD('month', -1, DATE_TRUNC('month', CURRENT_DATE()))
+      
+      - name: ENTERPRISE_SEGMENT
+        synonyms:
+          - enterprise customers
+          - enterprise accounts
+        description: Filter to Enterprise segment only
+        expr: SEGMENT_NAME = 'Enterprise'
+      
+      - name: HAS_ANOMALY
+        synonyms:
+          - with anomalies
+          - flagged accounts
+          - anomalous accounts
+        description: Filter to accounts with anomaly alerts
+        expr: LATEST_ALERT = 'ANOMALY'
 
 verified_queries:
   - name: top_accounts_by_cost
