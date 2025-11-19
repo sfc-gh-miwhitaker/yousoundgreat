@@ -1,1 +1,48 @@
-HI!
+# YouSoundGreat Billing Intelligence Demo
+
+## 👋 First Time Here?
+Fastest path (no local clone required):
+1. **Deploy:** Copy `sql/00_deploy_all.sql` from this repo, paste it into a new Snowsight worksheet (role `ACCOUNTADMIN`), and click *Run All*. Details live in `docs/01-DEPLOYMENT.md`. (~10 min)
+2. **Use the demo:** Follow `docs/02-USAGE.md` to open the Streamlit app and Snowflake Intelligence agent. (~15 min)
+3. **Clean up:** When finished, copy `sql/99_cleanup/teardown_all.sql` into Snowsight and run it, or follow the checklist in `docs/03-CLEANUP.md`. (~5 min)
+
+**Total setup time: ~30 minutes**
+
+**Optional local helpers:** If you clone the repo, the numbered scripts under `tools/` simply echo Snowsight checklists (no Python/virtualenv required).
+
+## Overview
+This repo implements the TelecomCorp billing intelligence scenario described in `.cursor/plan.md`. Everything runs 100% inside Snowflake: ingestion (Snowpipe Streaming), transformation (dynamic tables + tasks), AI (Cortex ML, Cortex Search, Snowflake Intelligence), and visualization (Streamlit in Snowflake). The deliverable highlights how finance teams can ask natural language questions about multi-account Snowflake spend while keeping governance and cost controls inside the platform.
+
+This repository follows the **Snowsight-only automation mode**—all workloads run directly in Snowflake, and the `tools/` scripts simply echo reminders with zero local runtime requirements.
+
+## Repository Layout
+- `diagrams/` – Mandatory data, flow, network, auth Mermaid diagrams (Reference Impl)
+- `docs/` – Numbered guides for deployment, operations, cleanup
+- `sql/` – Idempotent scripts (00 deploy-all, 01 setup, 02 data, 03 transformations, 04 Cortex/Intelligence, 05 Streamlit, 99 cleanup)
+- `tools/` – Numbered wrappers that print deployment/service checklists (`00_master`, `02_start`, `03_status`, `04_stop`)
+- `config/.env.example` – Placeholder for local Snowflake connection variables
+
+## Key Capabilities
+- Centralize billing telemetry from Kafka + Salesforce into `SNOWFLAKE_EXAMPLE`
+- Maintain near-real-time aggregates via `SFE_ANALYTICS_COSTS.DT_ACCOUNT_BILLING`
+- Surface anomalies using `SNOWFLAKE.ML.CLASSIFICATION` and Cortex Search knowledge base
+- Enable analysts to self-serve via Snowflake Intelligence agent + Streamlit dashboard
+
+## Architecture & Compliance
+All diagrams follow the mandatory Reference Impl format and are stored under `diagrams/`. Updates are tracked in `.cursor/DIAGRAM_CHANGELOG.md`. Cleanup scripts preserve shared infrastructure per demo rules (never drop `SNOWFLAKE_EXAMPLE` or shared SFE_* integrations).
+
+## Estimated Demo Costs (Standard Edition @ $2/credit)
+| Component | Consumption | Est. Credits | Est. Cost |
+|-----------|-------------|--------------|-----------|
+| `SFE_BILLING_WH` (XSMALL) | 15 minutes to run setup, pipelines, Streamlit refresh | 0.25 | ~$0.50 |
+| Cortex ML training (`SFE_USAGE_ANOMALY_MODEL`) | Single training job | 0.10 | ~$0.20 |
+| Cortex Search service (`SFE_BILLING_SEARCH`) | <0.1 GB indexed, 1 month | 0.02 | ~$0.04 |
+| Snowflake Intelligence agent | Metadata only, negligible | — | $0.00 |
+| **One-time total** | | **0.37 credits** | **~$0.74** |
+| **Ongoing monthly (keeping pipelines idle)** | Background search storage + occasional task runs (~0.05 credits) | **0.05** | **~$0.10** |
+
+Costs scale with data volume and warehouse runtime; adjust warehouse size or task cadence to control spend.
+
+## Status
+Build in progress via `builddemo` checkpoints using GitHub repo https://github.com/sfc-gh-miwhitaker/yousoundgreat.
+

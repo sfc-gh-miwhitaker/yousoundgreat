@@ -1,2 +1,12 @@
-# Cursor editor artifacts (local only)
+# Dev artifacts
 .cursor/
+.cursornotes/
+.pids/
+
+# Virtual envs
+venv/
+.venv/
+*.venv/
+
+# Config with secrets
+config/.env

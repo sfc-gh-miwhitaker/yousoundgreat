@@ -1,0 +1,78 @@
+/*******************************************************************************
+ * DEMO PROJECT: YouSoundGreat Billing Intelligence
+ * Script: 00_deploy_all.sql
+ *
+ * ⚠️  NOT FOR PRODUCTION USE - EXAMPLE IMPLEMENTATION ONLY
+ *
+ * SNOWSIGHT USAGE:
+ *   1. Copy this entire script.
+ *   2. Open Snowsight -> Worksheets -> New Worksheet.
+ *   3. Set role ACCOUNTADMIN and warehouse with appropriate credits.
+ *   4. Paste and click "Run All" (~10 minutes runtime).
+ *
+ * REQUIREMENTS:
+ *   - ACCOUNTADMIN rights to create API integrations and warehouses.
+ *   - Outbound HTTPS access to GitHub.
+ *   - Target repo: https://github.com/sfc-gh-miwhitaker/yousoundgreat
+ *
+ * ORDER OF OPERATIONS:
+ *   1. Create/reuse SNOWFLAKE_EXAMPLE database + shared schemas.
+ *   2. Create API integration + Git repository referencing GitHub.
+ *   3. Create dedicated warehouse SFE_BILLING_WH (auto-suspend 60s).
+ *   4. Execute numbered SQL scripts directly from the Git repo stage.
+ *
+ * TROUBLESHOOTING:
+ *   - If API integration already exists, comment out the CREATE statement.
+ *   - Use SHOW GIT REPOSITORIES to confirm clone succeeded.
+ *   - Refer to docs/01-DEPLOYMENT.md for additional steps.
+ ******************************************************************************/
+
+-- Context --------------------------------------------------------------------
+USE ROLE ACCOUNTADMIN;
+CREATE DATABASE IF NOT EXISTS SNOWFLAKE_EXAMPLE COMMENT = 'Demo/Example projects - NOT FOR PRODUCTION';
+CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS;
+
+-- API Integration -------------------------------------------------------------
+CREATE OR REPLACE API INTEGRATION SFE_GIT_API_INTEGRATION
+    API_PROVIDER = git_https_api
+    API_ALLOWED_PREFIXES = ('https://github.com/sfc-gh-miwhitaker/yousoundgreat.git')
+    ENABLED = TRUE
+    COMMENT = 'DEMO: Billing intelligence repo integration';
+
+-- Git Repository --------------------------------------------------------------
+CREATE OR REPLACE GIT REPOSITORY SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO
+    API_INTEGRATION = SFE_GIT_API_INTEGRATION
+    ORIGIN = 'https://github.com/sfc-gh-miwhitaker/yousoundgreat.git'
+    COMMENT = 'DEMO: Git reference for billing intelligence demo';
+
+-- Warehouse ------------------------------------------------------------------
+CREATE OR REPLACE WAREHOUSE SFE_BILLING_WH
+    WITH WAREHOUSE_SIZE = 'XSMALL'
+    AUTO_SUSPEND = 60
+    AUTO_RESUME = TRUE
+    INITIALLY_SUSPENDED = TRUE
+    COMMENT = 'DEMO: Dedicated warehouse for billing intelligence workloads';
+
+USE WAREHOUSE SFE_BILLING_WH;
+
+-- Helper stage alias ----------------------------------------------------------
+SET git_branch = 'branches/main';
+SET git_root = '@SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO/' || $git_branch;
+
+-- Execute numbered scripts ----------------------------------------------------
+EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/01_create_database.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/02_create_schemas.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/03_create_roles.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/01_setup/04_grants.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/02_data/01_create_tables.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/02_data/02_load_sample_data.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/03_transformations/01_create_streams.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/03_transformations/02_create_views.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/03_transformations/03_create_tasks.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/04_cortex/01_train_classification_model.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/04_cortex/02_cortex_search.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/04_cortex/03_intelligence_agent.sql';
+EXECUTE IMMEDIATE FROM :git_root || '/sql/05_streamlit/01_create_streamlit.sql';
+
+-- Completion banner -----------------------------------------------------------
+SELECT 'Billing intelligence demo deployment complete. Switch to BILLING_ANALYST_ROLE for day-two operations.' AS STATUS_MESSAGE;
