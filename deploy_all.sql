@@ -29,8 +29,14 @@
 
 -- Context --------------------------------------------------------------------
 USE ROLE ACCOUNTADMIN;
+
+-- Create shared infrastructure (owned by SYSADMIN for demo project use)
+USE ROLE SYSADMIN;
 CREATE DATABASE IF NOT EXISTS SNOWFLAKE_EXAMPLE COMMENT = 'Demo/Example projects - NOT FOR PRODUCTION';
-CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS;
+CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS COMMENT = 'DEMO: Shared Git repository stage area';
+
+-- Switch back to ACCOUNTADMIN for API integration and Git repo creation
+USE ROLE ACCOUNTADMIN;
 
 -- API Integration -------------------------------------------------------------
 CREATE OR REPLACE API INTEGRATION SFE_GIT_API_INTEGRATION
