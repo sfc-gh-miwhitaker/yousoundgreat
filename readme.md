@@ -2,7 +2,7 @@
 
 ## 👋 First Time Here?
 Fastest path (no local clone required):
-1. **Deploy:** Copy `sql/00_deploy_all.sql` from this repo, paste it into a new Snowsight worksheet (role `ACCOUNTADMIN`), and click *Run All*. Details live in `docs/01-DEPLOYMENT.md`. (~10 min)
+1. **Deploy:** Copy `deploy_all.sql` from this repo, paste it into a new Snowsight worksheet (role `ACCOUNTADMIN`), and click *Run All*. Details live in `docs/01-DEPLOYMENT.md`. (~10 min)
 2. **Use the demo:** Follow `docs/02-USAGE.md` to open the Streamlit app and Snowflake Intelligence agent. (~15 min)
 3. **Clean up:** When finished, copy `sql/99_cleanup/teardown_all.sql` into Snowsight and run it, or follow the checklist in `docs/03-CLEANUP.md`. (~5 min)
 
@@ -13,7 +13,8 @@ This repository follows the **Snowsight-only automation mode**—all workloads r
 ## Repository Layout
 - `diagrams/` – Mandatory data, flow, network, auth Mermaid diagrams (Reference Impl)
 - `docs/` – Numbered guides for deployment, operations, cleanup
-- `sql/` – Idempotent scripts (00 deploy-all, 01 setup, 02 data, 03 transformations, 04 Cortex/Intelligence, 05 Streamlit, 99 cleanup)
+- `sql/` – Idempotent scripts (01 setup, 02 data, 03 transformations, 04 Cortex/Intelligence, 05 Streamlit, 99 cleanup)
+- `deploy_all.sql` – Single-script deployment (copy/paste into Snowsight)
 - `config/.env.example` – Placeholder for local Snowflake connection variables
 
 ## Key Capabilities
@@ -38,4 +39,4 @@ All diagrams follow the mandatory Reference Impl format and are stored under `di
 Costs scale with data volume and warehouse runtime; adjust warehouse size or task cadence to control spend.
 
 ## Status
-Build in progress via `builddemo` checkpoints using GitHub repo https://github.com/sfc-gh-miwhitaker/yousoundgreat.
+Production-ready reference implementation demonstrating Snowflake-native billing intelligence patterns.
