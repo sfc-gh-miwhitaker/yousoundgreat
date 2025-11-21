@@ -59,14 +59,14 @@ EXCEPTION
     WHEN OTHER THEN NULL;
 END;
 
--- Drop Git repo clone (keep API integration per shared use)
+-- Drop Git repo clone (keep API integration per shared infrastructure rule)
 DROP GIT REPOSITORY IF EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO;
 
 -- Drop warehouse
 DROP WAREHOUSE IF EXISTS SFE_BILLING_WH;
 
--- Drop API integration
-DROP API INTEGRATION IF EXISTS SFE_GIT_API_INTEGRATION;
+-- NOTE: SFE_GIT_API_INTEGRATION is NOT dropped - it's shared infrastructure
+-- that may be used by other demo projects per core.mdc rules
 
 -- Drop schemas with cascade (fully qualified)
 DROP SCHEMA IF EXISTS SNOWFLAKE_EXAMPLE.SFE_SHARED_KNOWLEDGE CASCADE;
@@ -82,3 +82,4 @@ SELECT 'Demo cleanup complete. All project-specific objects removed.' AS STATUS;
 -- - snowflake_intelligence.agents schema (agent discovery namespace)
 -- - SNOWFLAKE_EXAMPLE database (demo database)
 -- - SNOWFLAKE_EXAMPLE.GIT_REPOS schema (shared Git repository namespace)
+-- - SFE_GIT_API_INTEGRATION (shared API integration for GitHub access)
