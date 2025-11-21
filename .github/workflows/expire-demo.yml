@@ -1,0 +1,31 @@
+name: Demo Expiration Check
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Daily at midnight UTC
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  check-expiration:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Expiration Date
+        run: |
+          EXPIRATION_DATE="2025-12-21"
+          CURRENT_DATE=$(date +%Y-%m-%d)
+          
+          echo "Current date: $CURRENT_DATE"
+          echo "Expiration date: $EXPIRATION_DATE"
+          
+          if [[ "$CURRENT_DATE" > "$EXPIRATION_DATE" ]]; then
+            echo "::error::Demo expired on $EXPIRATION_DATE"
+            echo "Repository should be archived and made private"
+            echo "Contact: SE Community for updated version"
+            exit 1
+          elif [[ $(( ($(date -d "$EXPIRATION_DATE" +%s) - $(date -d "$CURRENT_DATE" +%s)) / 86400 )) -le 7 ]]; then
+            echo "::warning::Demo expires in less than 7 days on $EXPIRATION_DATE"
+          else
+            DAYS_REMAINING=$(( ($(date -d "$EXPIRATION_DATE" +%s) - $(date -d "$CURRENT_DATE" +%s)) / 86400 ))
+            echo "::notice::Demo is active. $DAYS_REMAINING days remaining until $EXPIRATION_DATE"
+          fi
+

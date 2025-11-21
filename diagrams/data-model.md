@@ -1,9 +1,12 @@
 # Data Model - YouSoundGreat Billing Intelligence
-Author: Michael Whitaker
-Last Updated: 2025-11-18
-Status: Reference Impl
+Author: SE Community  
+Last Updated: 2025-11-21  
+Expires: 2025-12-21 (30 days from creation)  
+Status: Reference Implementation
+
 ![Snowflake](https://img.shields.io/badge/Snowflake-29B5E8?style=for-the-badge&logo=snowflake&logoColor=white)
-Reference Impl: This code demonstrates prod-grade architectural patterns and best practice. review and customize security, networking, logic for your organization's specific requirements before deployment.
+
+Reference Implementation: This code demonstrates production-grade architectural patterns and best practices. Review and customize security, networking, and logic for your organization's specific requirements before deployment.
 ## Overview
 Logical data model for the TelecomCorp billing intelligence demo showing how raw usage feeds staging, analytics, Cortex-ready datasets, and governance tables inside `SNOWFLAKE_EXAMPLE`.
 ## Diagram

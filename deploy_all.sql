@@ -1,6 +1,6 @@
 /*******************************************************************************
  * DEMO PROJECT: YouSoundGreat Billing Intelligence
- * Script: 00_deploy_all.sql
+ * Script: deploy_all.sql
  *
  * ⚠️  NOT FOR PRODUCTION USE - EXAMPLE IMPLEMENTATION ONLY
  *
@@ -26,6 +26,24 @@
  *   - Use SHOW GIT REPOSITORIES to confirm clone succeeded.
  *   - Refer to docs/01-DEPLOYMENT.md for additional steps.
  ******************************************************************************/
+
+-- Expiration Check -----------------------------------------------------------
+-- This demo expires on 2025-12-21 (30 days from creation: 2025-11-21)
+DECLARE
+    expiration_date DATE := '2025-12-21';
+    current_date DATE := CURRENT_DATE();
+    days_remaining INT;
+BEGIN
+    days_remaining := DATEDIFF('day', current_date, expiration_date);
+    
+    IF (current_date > expiration_date) THEN
+        RAISE EXCEPTION 'DEMO EXPIRED: This demo expired on 2025-12-21. Code may reference outdated Snowflake syntax or deprecated features. Please check for updated versions or contact SE Community.';
+    ELSIF (days_remaining <= 7) THEN
+        CALL SYSTEM$LOG('WARNING', 'DEMO EXPIRING SOON: This demo expires in ' || days_remaining || ' days on 2025-12-21.');
+    ELSE
+        CALL SYSTEM$LOG('INFO', 'Demo is active. ' || days_remaining || ' days remaining until expiration on 2025-12-21.');
+    END IF;
+END;
 
 -- Context --------------------------------------------------------------------
 USE ROLE ACCOUNTADMIN;

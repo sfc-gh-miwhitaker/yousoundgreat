@@ -222,7 +222,7 @@ verified_queries:
   - name: top_accounts_by_cost
     question: What are the top 5 accounts by cost this month?
     verified_at: 1731974400
-    verified_by: Michael Whitaker
+    verified_by: SE Community
     use_as_onboarding_question: true
     sql: |
       SELECT
@@ -241,7 +241,7 @@ verified_queries:
   - name: top_accounts_by_total_spending
     question: Show me the top 3 accounts by total spending
     verified_at: 1731974400
-    verified_by: Michael Whitaker
+    verified_by: SE Community
     use_as_onboarding_question: true
     sql: |
       SELECT
@@ -260,7 +260,7 @@ verified_queries:
   - name: enterprise_data_costs
     question: Which Enterprise accounts spent the most on data services?
     verified_at: 1731974400
-    verified_by: Michael Whitaker
+    verified_by: SE Community
     use_as_onboarding_question: true
     sql: |
       SELECT
@@ -278,7 +278,7 @@ verified_queries:
   - name: highest_voice_costs
     question: What were the highest voice costs by account?
     verified_at: 1731974400
-    verified_by: Michael Whitaker
+    verified_by: SE Community
     use_as_onboarding_question: true
     sql: |
       SELECT
@@ -298,7 +298,7 @@ verified_queries:
   - name: segment_cost_comparison
     question: Compare average costs between Enterprise, SMB, and Commercial segments
     verified_at: 1731974400
-    verified_by: Michael Whitaker
+    verified_by: SE Community
     sql: |
       SELECT
         SEGMENT_NAME,
@@ -316,7 +316,7 @@ verified_queries:
   - name: enterprise_cost_trend
     question: Show me the cost trend for Enterprise accounts over the last 6 months
     verified_at: 1731974400
-    verified_by: Michael Whitaker
+    verified_by: SE Community
     sql: |
       SELECT
         BILLING_MONTH,
