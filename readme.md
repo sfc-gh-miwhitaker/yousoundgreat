@@ -8,14 +8,15 @@ Fastest path (no local clone required):
 
 ## Overview
 This repo demonstrates a billing intelligence platform built 100% natively in Snowflake. It showcases ingestion (Snowpipe Streaming), transformation (dynamic tables + tasks), AI capabilities (Cortex ML, Cortex Search, Snowflake Intelligence agents), and visualization (Streamlit in Snowflake). The platform enables natural language questions about account-level costs while maintaining governance and cost controls entirely within Snowflake.
-This repository follows the **Snowsight-only automation mode**—all workloads run directly in Snowflake.
+
+**Snowsight-Only Mode:** This repository follows the Snowsight-only automation pattern—all workloads run directly in Snowflake. **No local Python, Node.js, or command-line tools required.** Simply copy/paste SQL into Snowsight worksheets to deploy and operate the entire platform.
 
 ## Repository Layout
 - `diagrams/` – Mandatory data, flow, network, auth Mermaid diagrams (Reference Impl)
 - `docs/` – Numbered guides for deployment, operations, cleanup
 - `sql/` – Idempotent scripts (01 setup, 02 data, 03 transformations, 04 Cortex/Intelligence, 05 Streamlit, 99 cleanup)
+- `streamlit/` – Streamlit dashboard application code
 - `deploy_all.sql` – Single-script deployment (copy/paste into Snowsight)
-- `config/.env.example` – Placeholder for local Snowflake connection variables
 
 ## Key Capabilities
 - Centralize billing telemetry from Kafka + Salesforce into `SNOWFLAKE_EXAMPLE`

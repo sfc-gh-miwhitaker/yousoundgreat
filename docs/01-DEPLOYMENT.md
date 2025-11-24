@@ -8,7 +8,6 @@ Provision the full TelecomCorp billing intelligence stack inside `SNOWFLAKE_EXAM
 - Ability to create API integrations (keeps `SFE_GIT_API_INTEGRATION` for reuse)
 - Snowsight worksheet access or SnowSQL (for verification queries)
 - Outbound HTTPS access to `https://github.com/sfc-gh-miwhitaker/yousoundgreat`
-- Optional: local shell or PowerShell access if you want to run the `tools/00_master.*` checklist locally (no Python/virtualenv required)
 
 ## Steps
 1. **Open Snowsight**
@@ -16,7 +15,7 @@ Provision the full TelecomCorp billing intelligence stack inside `SNOWFLAKE_EXAM
    - Role: `ACCOUNTADMIN`
    - Any warehouse with deployment credits
 2. **Paste the deployment script**
-   - In this repo, open `sql/00_deploy_all.sql` (or use the GitHub *Raw* view) and copy the entire file into the worksheet.
+   - In this repo, open `deploy_all.sql` in the root directory (or use the GitHub *Raw* view) and copy the entire file into the worksheet.
 3. **Run All**
    - Execute the worksheet. The script automatically:
      - Ensures `SNOWFLAKE_EXAMPLE` and the `GIT_REPOS` schema exist.
@@ -39,7 +38,7 @@ Provision the full TelecomCorp billing intelligence stack inside `SNOWFLAKE_EXAM
 - Streamlit app `SFE_BILLING_STREAMLIT` referencing repo files
 
 ## Troubleshooting
-- **API integration already exists**: edit `sql/00_deploy_all.sql` to skip `CREATE OR REPLACE API INTEGRATION` and rerun.
+- **API integration already exists**: edit `deploy_all.sql` to skip `CREATE OR REPLACE API INTEGRATION` and rerun.
 - **Git repo clone failed**: confirm PAT/secret (if private) and connectivity to GitHub; re-run only the Git portion.
 - **EXECUTE IMMEDIATE errors**: review `HISTORY` tab for the failing stage path and re-run specific SQL file via worksheet.
 - **Tasks suspended**: rerun `ALTER TASK ... RESUME;` statements found in `sql/03_transformations/03_create_tasks.sql`.
