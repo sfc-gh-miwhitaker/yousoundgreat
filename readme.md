@@ -1,4 +1,18 @@
+![Reference Implementation](https://img.shields.io/badge/Reference-Implementation-blue)
+![Ready to Run](https://img.shields.io/badge/Ready%20to%20Run-Yes-green)
+![Expires](https://img.shields.io/badge/Expires-2025--12--21-orange)
+
 # YouSoundGreat Billing Intelligence Demo
+
+> **⚠️ DEMONSTRATION PROJECT - EXPIRES: 2025-12-21**  
+> This demo uses Snowflake features current as of November 2025.  
+> After expiration, this repository will be archived and made private.
+
+**Author:** SE Community  
+**Purpose:** Reference implementation for billing intelligence use case  
+**Created:** 2025-11-21 | **Expires:** 2025-12-21 (30 days) | **Status:** ACTIVE
+
+---
 
 ## 👋 First Time Here?
 Fastest path (no local clone required):

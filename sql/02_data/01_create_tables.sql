@@ -28,7 +28,7 @@ CREATE OR REPLACE TABLE SFE_RAW_BILLING.USAGE_METRICS (
     ingest_source VARCHAR,
     load_ts TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
     row_comment VARCHAR
-) COMMENT = 'DEMO: Raw telecom usage events ingested via Snowpipe Streaming';
+) COMMENT = 'DEMO: Raw telecom usage events ingested via Snowpipe Streaming (Expires: 2025-12-21)';
 
 CREATE OR REPLACE TABLE SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
     segment_id NUMBER AUTOINCREMENT START 1 INCREMENT 1,
@@ -40,7 +40,7 @@ CREATE OR REPLACE TABLE SFE_RAW_BILLING.CUSTOMER_SEGMENTS (
     effective_start DATE,
     effective_end DATE,
     row_comment VARCHAR
-) COMMENT = 'DEMO: Master data for telecom customer segmentation';
+) COMMENT = 'DEMO: Master data for telecom customer segmentation (Expires: 2025-12-21)';
 
 CREATE OR REPLACE TABLE SFE_RAW_BILLING.COST_ALLOCATIONS (
     allocation_id NUMBER AUTOINCREMENT START 1 INCREMENT 1,
@@ -49,7 +49,7 @@ CREATE OR REPLACE TABLE SFE_RAW_BILLING.COST_ALLOCATIONS (
     bucket_amount NUMBER(12,4),
     billed_at DATE,
     notes VARCHAR
-) COMMENT = 'DEMO: Derived cost buckets for usage events';
+) COMMENT = 'DEMO: Derived cost buckets for usage events (Expires: 2025-12-21)';
 
 CREATE OR REPLACE TABLE SFE_STG_TELECOM.STG_USAGE_ENRICHED (
     usage_id NUMBER,
@@ -62,7 +62,7 @@ CREATE OR REPLACE TABLE SFE_STG_TELECOM.STG_USAGE_ENRICHED (
     staged_at TIMESTAMP_NTZ,
     segment_name VARCHAR,
     cost_bucket VARCHAR
-) COMMENT = 'DEMO: Standardized staging view for analytics + ML';
+) COMMENT = 'DEMO: Standardized staging view for analytics + ML (Expires: 2025-12-21)';
 
 CREATE OR REPLACE TABLE SFE_ANALYTICS_COSTS.DIM_CUSTOMER (
     customer_key NUMBER AUTOINCREMENT START 1 INCREMENT 1,
@@ -73,7 +73,7 @@ CREATE OR REPLACE TABLE SFE_ANALYTICS_COSTS.DIM_CUSTOMER (
     lifecycle_status VARCHAR,
     avg_monthly_cost NUMBER(12,4),
     last_active_ts TIMESTAMP_NTZ
-) COMMENT = 'DEMO: Curated customer dimension referenced by facts';
+) COMMENT = 'DEMO: Curated customer dimension referenced by facts (Expires: 2025-12-21)';
 
 CREATE OR REPLACE TABLE SFE_ANALYTICS_COSTS.FCT_ACCOUNT_COSTS (
     billing_key NUMBER AUTOINCREMENT START 1 INCREMENT 1,
@@ -88,7 +88,7 @@ CREATE OR REPLACE TABLE SFE_ANALYTICS_COSTS.FCT_ACCOUNT_COSTS (
     total_cost NUMBER(12,4),
     anomaly_score NUMBER(6,4),
     alert_label VARCHAR
-) COMMENT = 'DEMO: Billing fact table powering dashboards + ML';
+) COMMENT = 'DEMO: Billing fact table powering dashboards + ML (Expires: 2025-12-21)';
 
 CREATE OR REPLACE TABLE SFE_SHARED_KNOWLEDGE.BILLING_KB (
     doc_id NUMBER AUTOINCREMENT START 1 INCREMENT 1,
@@ -97,4 +97,4 @@ CREATE OR REPLACE TABLE SFE_SHARED_KNOWLEDGE.BILLING_KB (
     doc_body VARCHAR,
     region_code VARCHAR,
     last_reviewed DATE
-) COMMENT = 'DEMO: Reference knowledge base for Cortex Search';
+) COMMENT = 'DEMO: Reference knowledge base for Cortex Search (Expires: 2025-12-21)';

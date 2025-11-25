@@ -9,7 +9,7 @@
  ******************************************************************************/
 USE ROLE ACCOUNTADMIN;
 CREATE DATABASE IF NOT EXISTS SNOWFLAKE_EXAMPLE
-    COMMENT = 'DEMO: Repository for example projects - NOT FOR PRODUCTION';
+    COMMENT = 'DEMO: Repository for example projects - NOT FOR PRODUCTION (Expires: 2025-12-21)';
 
 CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS
-    COMMENT = 'DEMO: Holds Git repository clones for billing intelligence demo';
+    COMMENT = 'DEMO: Holds Git repository clones for billing intelligence demo (Expires: 2025-12-21)';

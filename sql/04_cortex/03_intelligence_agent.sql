@@ -44,7 +44,7 @@ USE DATABASE snowflake_intelligence;
 -- Create agent in Snowflake Intelligence agents schema for UI discoverability
 CREATE OR REPLACE AGENT agents.SFE_BILLING_AGENT
     PROFILE = '{"display_name": "Billing Intelligence Copilot", "avatar": "spark", "color": "blue"}'
-    COMMENT = 'DEMO: Production-grade telecom billing assistant with governed semantic data access and policy knowledge base integration'
+    COMMENT = 'DEMO: Production-grade telecom billing assistant with governed semantic data access and policy knowledge base integration (Expires: 2025-12-21)'
 FROM SPECIFICATION
 $$
 {

@@ -51,7 +51,7 @@ USE ROLE ACCOUNTADMIN;
 -- Create shared infrastructure (owned by SYSADMIN for demo project use)
 USE ROLE SYSADMIN;
 CREATE DATABASE IF NOT EXISTS SNOWFLAKE_EXAMPLE COMMENT = 'Demo/Example projects - NOT FOR PRODUCTION';
-CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS COMMENT = 'DEMO: Shared Git repository stage area';
+CREATE SCHEMA IF NOT EXISTS SNOWFLAKE_EXAMPLE.GIT_REPOS COMMENT = 'DEMO: Shared Git repository stage area (Expires: 2025-12-21)';
 
 -- Switch back to ACCOUNTADMIN for API integration and Git repo creation
 USE ROLE ACCOUNTADMIN;
@@ -61,13 +61,13 @@ CREATE OR REPLACE API INTEGRATION SFE_GIT_API_INTEGRATION
     API_PROVIDER = git_https_api
     API_ALLOWED_PREFIXES = ('https://github.com/sfc-gh-miwhitaker/yousoundgreat.git')
     ENABLED = TRUE
-    COMMENT = 'DEMO: Billing intelligence repo integration';
+    COMMENT = 'DEMO: Billing intelligence repo integration (Expires: 2025-12-21)';
 
 -- Git Repository --------------------------------------------------------------
 CREATE OR REPLACE GIT REPOSITORY SNOWFLAKE_EXAMPLE.GIT_REPOS.SFE_BILLING_REPO
     API_INTEGRATION = SFE_GIT_API_INTEGRATION
     ORIGIN = 'https://github.com/sfc-gh-miwhitaker/yousoundgreat.git'
-    COMMENT = 'DEMO: Git reference for billing intelligence demo';
+    COMMENT = 'DEMO: Git reference for billing intelligence demo (Expires: 2025-12-21)';
 
 
 -- Fetch Repository Contents --------------------------------------------------
@@ -79,7 +79,7 @@ CREATE OR REPLACE WAREHOUSE SFE_BILLING_WH
     AUTO_SUSPEND = 60
     AUTO_RESUME = TRUE
     INITIALLY_SUSPENDED = TRUE
-    COMMENT = 'DEMO: Dedicated warehouse for billing intelligence workloads';
+    COMMENT = 'DEMO: Dedicated warehouse for billing intelligence workloads (Expires: 2025-12-21)';
 
 USE WAREHOUSE SFE_BILLING_WH;
 
